@@ -250,8 +250,7 @@ road_masks = np.zeros([len(images), 224, 224])
 for i, cls_idx in enumerate(clusters):
     #print(i)
     img_idx, superpixel_idx = batch_info[i]
-    #print(batch_info[i])
-    #print(superpixel_idx)
+  
     if cls_idx == 0:
 
         road_masks[img_idx, :, :] += superpixels[img_idx] == superpixel_idx
