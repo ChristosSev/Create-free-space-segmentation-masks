@@ -28,7 +28,7 @@ import drn as models
 
 
 images = ["test2.jpg", "test23.jpg"]
-#images = ["sama.jpg"]
+
 
 #image preprocessing settings
 width,height = 224,224
@@ -71,12 +71,6 @@ for i,img_name in enumerate(images):
 
     segments = felzenszwalb(img, scale=200, sigma=0.8, min_size=20)
   
-
-
-
-
- 
-
     segments = segments.astype(int)
     superpixels.append(segments)
 
