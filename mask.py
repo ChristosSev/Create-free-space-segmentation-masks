@@ -123,8 +123,7 @@ for i in range(len(images)):
             f_x1_y2 = img_features[i, :, x1, y2]
             f_x2_y1 = img_features[i, :, y1, x2]
             f_x2_y2 = img_features[i, :, y2, x2]
-            # assert round((x2 - x) * (y2 - y) + (x - x1) * (y2 - y) + (x2 - x) * (y - y1) + (x - x1) * (y - y1)) == 1
-            # assert ((x2 - x1) * (y2 - y1)) == 1
+          
             f = f_x1_y1 * (x2 - x) * (y2 - y)
             f += f_x1_y2 * (x - x1) * (y2 - y)
             f += f_x2_y1 * (x2 - x) * (y - y1)
