@@ -27,17 +27,6 @@ import drn as models
 
 
 
-# depth_channel = depth[..., np.newaxis]
-# img_d = np.concatenate((img, depth_channel), axis=2)
-
-
-#print(img_d.shape)
-
-
-#plt.savefig("sama.jpg")
-
-
-
 images = ["test2.jpg", "test23.jpg"]
 #images = ["sama.jpg"]
 
@@ -65,9 +54,6 @@ model.eval()#set to inference mode
 model.out_middle = True
 
 
-#print(model)
-
-
 img_features = np.zeros([len(images),512, 28, 28])
 #print(img_features.shape)
 for i,img_name in enumerate(images):
@@ -84,50 +70,32 @@ for i,img_name in enumerate(images):
 
 
     segments = felzenszwalb(img, scale=200, sigma=0.8, min_size=20)
-    #print(segments)
-
-    #segments = slic(img, n_segments=50, compactness=10)
-
-    # segments = np.load("seg_def.npy")
-    # print(segments)
-    # exit()
-
-   # segments = np.load("daspp.npy")
-    #print(segments)
-   # print(segments.shape)
-    #exit()
+  
 
 
-    #segments = np.mean(segments, axis = 2)
+
+
+ 
 
     segments = segments.astype(int)
     superpixels.append(segments)
-    #plt.imshow(mark_boundaries(img,segments))
 
-#print(len(superpixels))
 superpixels = np.asarray(superpixels)
 
-#print(superpixels.shape)
-#exit()
-# number of points to sample from each superpixel
 n_smaples = 10
 
-# the scaling factor for corrdinate mapping
-# (0,0) in input imgage is mapped to (0,0) in feature map
-# (223,223) in input image is mapped to (27,27) in feature map
+
 scaling_factor = 27 / 223
 
 # enumerate all possible (x,y) integer corrdinates in advance
 all_coords = np.array([[(cor_y, cor_x) for cor_y in range(28)] for cor_x in range(28)]).reshape(-1, 2)
 #print(all_coords)
 
-# fetaure of superpixels
-# superpixels_features[i][j] is the feature vector for j-th superpixel in i-th imaeg
+
 superpixels_features = []
 #print(len(images))
 for i in range(len(images)):
-    # for each image
-    #print(i)
+   
 
     num_superpixel = np.max(superpixels[i]) + 1
     #print(num_superpixel)
@@ -136,11 +104,7 @@ for i in range(len(images)):
 
 
     for idx in np.unique(superpixels[i]):
-    #for idx in range(num_superpixel):
-        # for each corresponding superpixel
-
-        # coordinates of points inside the superpixel
-
+   
         y_cords, x_cords = np.where(superpixels[i] == idx)
 
         # seelct random 10 points inside the superpixely
@@ -160,8 +124,7 @@ for i in range(len(images)):
             y1 = int(y - 0.5)
             y2 = y1 + 1
 
-            # do biliner interplate
-            # see https://en.wikipedia.org/wiki/Bilinear_interpolation#/media/File:Bilinear_interpolation_visualisation.svg
+         
             f_x1_y1 = img_features[i, :, y1, x1]
             f_x1_y2 = img_features[i, :, x1, y2]
             f_x2_y1 = img_features[i, :, y1, x2]
@@ -203,21 +166,7 @@ road_prior = np.exp(-((x_cords - xmean)**2/(2.*xsigma**2)+(y_cords - ymean)**2/(
 
 
 print(road_prior.shape)
-exit()
 
-#print(road_prior.shape)
-#()
-
-
-
-#depth_prior = np.load("depth_prior.npy")
-
-
-#print(depth_prior)
-#print(depth_prior.shape)
-
-#road_prior = depth_prior
-#exit()
 
 
 superpixels_weights = []
@@ -296,20 +245,11 @@ superpixels_weights_batch = np.array(superpixels_weights_batch)
 num_clusters = 5
 
 
-#print(superpixels_features_batch.shape)
-#print(superpixels_weights_batch.shape)
+
 
 
 clusters = weighted_kmeans(num_clusters, superpixels_features_batch, superpixels_weights_batch)
-#print(clusters)
-#print(clusters.shape)
 
-# while (np.sum(clusters == 0) == 0):
-#     # if the road cluster is emptry, run again
-#     clusters = weighted_kmeans(5, superpixels_features_batch, superpixels_weights_batch)
-
-# reorganzie the road mask per image from the results
-#print(superpixels)
 
 
 
@@ -322,10 +262,7 @@ for i, cls_idx in enumerate(clusters):
     if cls_idx == 0:
 
         road_masks[img_idx, :, :] += superpixels[img_idx] == superpixel_idx
-        #print(road_masks)
-#print(superpixels[img_idx])
-#print(superpixel_idx)
-#exit()
+   
 for i,img_name in enumerate(images):
     img = Image.open(img_name).convert('RGB').resize([224,224])
     plt.imshow(img)
