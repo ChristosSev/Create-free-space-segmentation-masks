@@ -29,5 +29,7 @@ To annotate the dataset according to the PU method, simply run annotate.py on yo
 
 Then  run mask.py to create the segmentation masks
 
-Then run model_train.py 
+### Model
+
+Run model_train.py 
 
